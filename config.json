@@ -1,0 +1,32 @@
+{
+  "ocr_engine": "paddleocr",
+  "rois": [
+    {
+      "name": "boost_pressure (mbar)",
+      "x": 1580,
+      "y": 295,
+      "width": 270,
+      "height": 130,
+      "value_type": "int",
+      "signed": false
+    },
+    {
+      "name": "boost_pressure_loop_diff (mbar)",
+      "x": 1580,
+      "y": 475,
+      "width": 270,
+      "height": 130,
+      "value_type": "int",
+      "signed": true
+    },
+    {
+      "name": "boost_pressure_ref (mbar)",
+      "x": 1580,
+      "y": 645,
+      "width": 270,
+      "height": 140,
+      "value_type": "int",
+      "signed": false
+    }
+  ]
+}

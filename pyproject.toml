@@ -1,0 +1,26 @@
+[project]
+name = "video2csv"
+version = "0.1.0"
+description = "Extract numeric data from screen-captured datalog videos to CSV"
+requires-python = ">=3.13"
+dependencies = [
+    "opencv-python-headless",
+    "paddleocr",
+    "paddlepaddle",
+    "numpy",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+]
+
+[project.scripts]
+video2csv = "video2csv.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/video2csv"]
