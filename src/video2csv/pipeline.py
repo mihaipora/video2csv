@@ -105,6 +105,7 @@ def run(
     video_path: Path,
     output_path: Path,
     max_frames: int | None = None,
+    frame_step: int = 1,
 ) -> None:
     engine = create_engine(config.ocr_engine)
     cap, meta = open_video(video_path)
@@ -123,6 +124,8 @@ def run(
     )
     if max_frames:
         logger.info("Processing first %d frames (of %d)", frames_to_process, meta.total_frames)
+    if frame_step > 1:
+        logger.info("Frame step: %d (processing every %dth frame)", frame_step, frame_step)
     logger.info("ROIs: %s", [r.name for r in config.rois])
     logger.info("Output: %s", output_path)
     logger.info("Output (changes only): %s", small_output)
@@ -136,7 +139,7 @@ def run(
 
     with CSVWriter(output_path, config.rois) as writer, \
          CSVWriter(small_output, config.rois) as small_writer:
-        for frame_idx, frame in iter_frames(cap, frames_to_process):
+        for frame_idx, frame in iter_frames(cap, frames_to_process, step=frame_step):
             ts = frame_timestamp_ms(frame_idx, meta.fps)
             current_crops = _crop_rois(frame, config.rois)
 

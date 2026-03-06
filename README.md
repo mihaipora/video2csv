@@ -41,7 +41,7 @@ pip install -e .
 ### Basic extraction
 
 ```bash
-video2csv recording.mp4 -c config.json
+video2csv recording.mp4 -c configs/config.json
 ```
 
 This produces `recording.csv` and `recording_small.csv` in the same directory as the video.
@@ -60,9 +60,11 @@ required arguments:
 optional arguments:
   -o, --output OUTPUT     Path for the output CSV file (default: <video_stem>.csv)
   -n, --max-frames N      Stop after processing N frames (useful for testing)
+  --frame-step N          Process every Nth frame (default: 1, every frame).
+                          Use --analyze to find a safe value.
   --analyze               Analyze ROI change rate without running OCR.
-                          Reports how often values change to help estimate
-                          processing time.
+                          Reports how often values change and recommends
+                          a --frame-step value.
   -v, --verbose           Enable DEBUG-level logging
 ```
 
@@ -71,15 +73,25 @@ optional arguments:
 Before running a full extraction, you can analyze how often values change in the video:
 
 ```bash
-video2csv recording.mp4 -c config.json --analyze
+video2csv recording.mp4 -c configs/config.json --analyze
 ```
 
-This runs a fast pass (no OCR) and reports change frequency statistics, including the total number of changes detected. Since OCR only runs on changed frames, this tells you how long the full extraction will take.
+This runs a fast pass (no OCR) and reports change frequency statistics, including the total number of changes detected and a recommended `--frame-step` value. Since OCR only runs on changed frames, this tells you how long the full extraction will take.
+
+### Frame stepping
+
+For long videos, you can skip frames to reduce processing time:
+
+```bash
+video2csv recording.mp4 -c configs/config.json --frame-step 12
+```
+
+This processes every 12th frame instead of every frame. The `--analyze` command recommends a safe step value (half the 5th percentile gap between changes) that won't miss any value updates. Change detection still runs on every processed frame, so OCR is only called when values actually change.
 
 ### Test with a few frames
 
 ```bash
-video2csv recording.mp4 -c config.json -n 100
+video2csv recording.mp4 -c configs/config.json -n 100
 ```
 
 ### Dump sample frames
@@ -166,3 +178,39 @@ For a typical 28-minute diagnostic recording at 47.5 fps (~81,000 frames):
 - With ~2,200 value changes: **~50 minutes** total
 
 Use `--analyze` to estimate processing time for your specific video before starting.
+
+## Quality checking
+
+After extraction, you can verify the results by visually comparing frame images against CSV values using Claude CLI (Haiku model). The quality check script is fully generic — it reads parameter names, crop coordinates, and count from the config file.
+
+### Running a quality check
+
+```bash
+# Full check (100 frames)
+python -m video2csv.quality_check \
+  -c configs/config_20260304.json \
+  --csv data/20260304_191424_small.csv \
+  --video data/20260304_191424.mp4
+
+# Quick test
+python -m video2csv.quality_check \
+  -c configs/config_20260304.json \
+  --csv data/20260304_191424_small.csv \
+  --video data/20260304_191424.mp4 \
+  --stop-after 5
+
+# Sample fewer frames
+python -m video2csv.quality_check \
+  -c configs/config_20260304.json \
+  --csv data/20260304_191424_small.csv \
+  --video data/20260304_191424.mp4 \
+  -n 50
+```
+
+The script:
+1. Reads ROI definitions from the config file (parameter names, coordinates, types).
+2. Samples N evenly spaced frames from the small CSV (changes-only file).
+3. Computes a bounding crop box from ROI coordinates and dumps value-column crops as PNGs.
+4. Calls `claude -p` (Haiku) for each frame to read the values from the image.
+5. Compares Claude's reading against the CSV and reports mismatches.
+6. Saves a report to `data/quality_check/report.md` and `report.json`.

@@ -40,11 +40,14 @@ def open_video(path: Path) -> tuple[cv2.VideoCapture, VideoMeta]:
 
 
 def iter_frames(
-    cap: cv2.VideoCapture, total_frames: int
+    cap: cv2.VideoCapture, total_frames: int, step: int = 1,
 ) -> Generator[tuple[int, Frame], None, None]:
     try:
         last_log_time = 0.0
-        for frame_idx in range(total_frames):
+        frame_idx = 0
+        while frame_idx < total_frames:
+            if step > 1:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
             ret, frame = cap.read()
             if not ret:
                 logger.warning(
@@ -57,6 +60,7 @@ def iter_frames(
                 logger.info("Frame %d / %d (%.1f%%)", frame_idx, total_frames, pct)
                 last_log_time = now
             yield frame_idx, frame
+            frame_idx += step
     finally:
         cap.release()
 
