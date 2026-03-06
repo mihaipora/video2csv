@@ -12,6 +12,9 @@ logger = logging.getLogger(__name__)
 def clean_ocr_text(raw: str, signed: bool) -> str:
     """Strip OCR artifacts, keep only digits, dots, and optionally a leading minus."""
     text = raw.strip()
+    # Fix common OCR confusions before stripping
+    text = text.replace("l", "1").replace("L", "1")
+    text = text.replace("O", "0").replace("o", "0")
     if signed and text.startswith("-"):
         cleaned = "-" + re.sub(r"[^0-9.]", "", text[1:])
     else:

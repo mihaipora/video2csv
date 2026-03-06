@@ -25,6 +25,7 @@ src/video2csv/
   config.py       — JSON config loading and validation
   models.py       — Data classes: ROI, VideoMeta, FrameResult, ValueType
   dump_frames.py  — Standalone tool to dump sample frames from a video
+  quality_check.py  — Generic quality check (config-driven, uses Claude CLI + Haiku)
   ocr/
     base.py                  — OCREngine protocol (interface)
     factory.py               — Engine registry and create_engine()
@@ -40,13 +41,19 @@ src/video2csv/
 python -m pytest tests/
 
 # Run extraction
-python -m video2csv data/recording.mp4 -c config.json
+python -m video2csv data/recording.mp4 -c configs/config.json
 
-# Analyze change rate (fast, no OCR)
-python -m video2csv data/recording.mp4 -c config.json --analyze
+# Run extraction with frame stepping (process every Nth frame)
+python -m video2csv data/recording.mp4 -c configs/config.json --frame-step 12
+
+# Analyze change rate (fast, no OCR) — recommends a --frame-step value
+python -m video2csv data/recording.mp4 -c configs/config.json --analyze
 
 # Dump sample frames from a video
 python -m video2csv.dump_frames data/recording.mp4
+
+# Quality check (run from a separate terminal, uses Claude CLI)
+python -m video2csv.quality_check -c configs/config_20260304.json --csv data/20260304_191424_small.csv --video data/20260304_191424.mp4 --stop-after 5
 ```
 
 ## Key design decisions
@@ -58,6 +65,8 @@ python -m video2csv.dump_frames data/recording.mp4
 - **Tall ROIs for Y-drift**: The diagnostic software UI drifts vertically (~65px over 28 min). ROIs are configured taller than the text, and PaddleOCR's detection finds the text within.
 - **Signed values**: ROIs with `"signed": true` preserve leading minus signs during OCR text cleaning.
 - **OCR text selection**: When multiple text regions are detected in an ROI, prefer text containing digits, then pick the largest bounding box area. This avoids picking unit labels like "mbar" over the actual number.
+- **OCR text cleanup**: Common character confusions (l→1, O→0) are fixed before stripping non-digit characters. This handles cases where OCR reads "-1" as "-l".
+- **Frame stepping**: `--frame-step N` skips frames during decoding to reduce processing time. `--analyze` recommends a safe step value. Change detection still runs on every processed frame.
 
 ## OCR engines
 
@@ -81,4 +90,5 @@ python -m pytest tests/ -v
 
 - `data/*.mp4` and `data/*.csv` are gitignored (large files)
 - `data/frame_*.png` are tracked (sample frames for ROI coordinate reference)
-- `config.json` contains ROI definitions for the current diagnostic video setup
+- `configs/config.json` contains ROI definitions for the original diagnostic video setup
+- `configs/config_20260304.json` contains ROI definitions for the 20260304 recording (20 parameters)

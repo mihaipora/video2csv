@@ -1,0 +1,185 @@
+{
+  "ocr_engine": "paddleocr",
+  "rois": [
+    {
+      "name": "accelerator_pedal_position (%)",
+      "x": 1740,
+      "y": 220,
+      "width": 180,
+      "height": 45,
+      "value_type": "float",
+      "signed": false
+    },
+    {
+      "name": "boost_pressure (mbar)",
+      "x": 1740,
+      "y": 250,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": false
+    },
+    {
+      "name": "boost_pressure_loop_diff (mbar)",
+      "x": 1740,
+      "y": 279,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": true
+    },
+    {
+      "name": "boost_pressure_ref (mbar)",
+      "x": 1740,
+      "y": 308,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": false
+    },
+    {
+      "name": "engine_speed (rpm)",
+      "x": 1740,
+      "y": 337,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": false
+    },
+    {
+      "name": "engine_torque (Nm)",
+      "x": 1740,
+      "y": 366,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": true
+    },
+    {
+      "name": "fuel_flow (mg/cp)",
+      "x": 1740,
+      "y": 395,
+      "width": 180,
+      "height": 45,
+      "value_type": "float",
+      "signed": false
+    },
+    {
+      "name": "fuel_flow_corr_cyl1 (mg/cp)",
+      "x": 1740,
+      "y": 424,
+      "width": 180,
+      "height": 45,
+      "value_type": "float",
+      "signed": true
+    },
+    {
+      "name": "fuel_flow_corr_cyl2 (mg/cp)",
+      "x": 1740,
+      "y": 453,
+      "width": 180,
+      "height": 45,
+      "value_type": "float",
+      "signed": true
+    },
+    {
+      "name": "fuel_flow_corr_cyl3 (mg/cp)",
+      "x": 1740,
+      "y": 482,
+      "width": 180,
+      "height": 45,
+      "value_type": "float",
+      "signed": true
+    },
+    {
+      "name": "fuel_flow_corr_cyl4 (mg/cp)",
+      "x": 1740,
+      "y": 511,
+      "width": 180,
+      "height": 45,
+      "value_type": "float",
+      "signed": true
+    },
+    {
+      "name": "fuel_qty_setpoint (mg/cp)",
+      "x": 1740,
+      "y": 540,
+      "width": 180,
+      "height": 45,
+      "value_type": "float",
+      "signed": false
+    },
+    {
+      "name": "idle_speed_ref (rpm)",
+      "x": 1740,
+      "y": 569,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": false
+    },
+    {
+      "name": "rail_pressure (bar)",
+      "x": 1740,
+      "y": 598,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": false
+    },
+    {
+      "name": "rail_pressure_loop_var (bar)",
+      "x": 1740,
+      "y": 627,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": true
+    },
+    {
+      "name": "rail_pressure_reg_current (mA)",
+      "x": 1740,
+      "y": 656,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": false
+    },
+    {
+      "name": "rail_pressure_reg_current_ref (mA)",
+      "x": 1740,
+      "y": 685,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": false
+    },
+    {
+      "name": "rail_pressure_sensor (V)",
+      "x": 1740,
+      "y": 714,
+      "width": 180,
+      "height": 45,
+      "value_type": "float",
+      "signed": false
+    },
+    {
+      "name": "rail_pressure_setting (bar)",
+      "x": 1740,
+      "y": 743,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": false
+    },
+    {
+      "name": "vehicle_speed (km/h)",
+      "x": 1740,
+      "y": 772,
+      "width": 180,
+      "height": 45,
+      "value_type": "int",
+      "signed": false
+    }
+  ]
+}

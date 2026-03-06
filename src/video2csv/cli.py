@@ -39,6 +39,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Stop after processing N frames (for testing).",
     )
     parser.add_argument(
+        "--frame-step",
+        type=int,
+        default=1,
+        help="Process every Nth frame (skip N-1 frames between reads). Default: 1 (every frame).",
+    )
+    parser.add_argument(
         "--analyze",
         action="store_true",
         help="Analyze ROI change rate and recommend --frame-step. No OCR, no output.",
@@ -73,4 +79,4 @@ def main(argv: list[str] | None = None) -> None:
         return
 
     output = args.output or args.video.with_suffix(".csv")
-    run(config, args.video, output, max_frames=args.max_frames)
+    run(config, args.video, output, max_frames=args.max_frames, frame_step=args.frame_step)
